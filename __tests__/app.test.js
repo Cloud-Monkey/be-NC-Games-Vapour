@@ -89,6 +89,8 @@ describe('200: GET', () => {
             const { review } = body;
             expect(review).toBeInstanceOf(Array);
             expect(review.length).toBe(13);
+            expect(review).toBeSortedBy("created_at", {
+                descending: true })
             review.forEach((review) => {
                 expect(review).toMatchObject({
                 owner: expect.any(String),
