@@ -116,7 +116,7 @@ describe('200: GET', () => {
         });
     });
 });
-describe.only('201: POST Request body accepts an object with the following properties, body, username', () => {
+describe('201: POST Request body accepts an object with the following properties, body, username', () => {
     it('should return a 201 and an should post the comment object to the comment table in database', () => {
         return request(app)
         .post('/api/reviews/1/comments')
