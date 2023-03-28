@@ -80,3 +80,37 @@ describe('200: GET', () => {
             expect(body.msg).toEqual("ID does not exist, please use a valid ID");
             });
     });
+describe('200: GET', () => {
+    it('should respond with a json containing an array of review objects that has the defined properties', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            expect(review).toBeInstanceOf(Array);
+            expect(review.length).toBe(13);
+            review.forEach((review) => {
+                expect(review).toMatchObject({
+                owner: expect.any(String),
+                title: expect.any(String),
+                review_id: expect.any(Number),
+                category: expect.any(String),
+                review_img_url: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                designer: expect.any(String),
+                comment_count: expect.any(Number),
+                });
+            });
+        });
+    });
+    it('should respond wih a 404 not found error with error message if incorrect path given', () => {
+        return request(app)
+        .get('/api/revews')
+        .expect(404)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Error: not found');
+        });
+    });
+});
