@@ -116,3 +116,20 @@ describe('200: GET', () => {
         });
     });
 });
+describe.only('201: POST Request body accepts an object with the following properties, body, username', () => {
+    it('should return a 201 and an should post the comment object to the comment table in database', () => {
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send({ body: 'Hello. I am a body', username: 'bainesface' })
+        .expect(201)
+        .then(({ body }) => {
+            expect(body).toMatchObject({
+                author: expect.any(String),
+                body: expect.any(String),
+                comment_id: expect.any(Number),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+            });
+        });
+    });
+});
