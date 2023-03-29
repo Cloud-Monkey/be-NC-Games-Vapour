@@ -116,6 +116,55 @@ describe('200: GET', () => {
         });
     });
 });
+describe('200: GET', () => {
+    it('should respond with a json array of comments for the given review_id of which each comment should have the defined properties', () => {
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then(({ body }) => {
+            const { comments } = body;
+            expect(comments).toBeInstanceOf(Array);
+            expect(comments.length).toBe(3);
+            comments.forEach((comments) => {
+                expect(comments).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    review_id: 2,
+                });
+            });
+        });
+    });
+    it('should respond with a 400 if an invalid review_id is given', () => {
+        return request(app)
+        .get('/api/reviews/reviews/comments')
+        .expect(400)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Invalid ID!');
+        });
+    });
+    it('should respond with a 404 if there are no comments associated with that review_id', () => {
+        return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(404)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('There are currently no comments for this review.');
+        });
+    });
+    it('should respond with a 404 if there is no review associated with that review_id', () => {
+        return request(app)
+        .get('/api/reviews/1000/comments')
+        .expect(404)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('ID does not exist, please use a valid ID');
+        });
+    });
+});
 describe('201: POST Request body accepts an object with the following properties, body, username', () => {
     it('should return a 201 and an should post the comment object to the comment table in database', () => {
         return request(app)
@@ -133,3 +182,4 @@ describe('201: POST Request body accepts an object with the following properties
         });
     });
 });
+
