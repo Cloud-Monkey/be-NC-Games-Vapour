@@ -137,6 +137,15 @@ describe('200: GET', () => {
             });
         });
     });
+    it('should respond with a 400 if an invalid review_id is given', () => {
+        return request(app)
+        .get('/api/reviews/reviews/comments')
+        .expect(400)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Invalid ID!');
+        });
+    });
     it('should respond with a 404 if there are no comments associated with that review_id', () => {
         return request(app)
         .get('/api/reviews/1/comments')
