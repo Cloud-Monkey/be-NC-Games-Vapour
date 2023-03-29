@@ -1,7 +1,8 @@
 const express = require("express");
 const { getCategories } = require("./controllers/categories.controller.js");
 const getReviewById = require("./controllers/getReviewsById.controller.js");
-const getReviews = require("./controllers/getReviews.controller.js")
+const getReviews = require("./controllers/getReviews.controller.js");
+const getCommentsByReviewId = require("./controllers/getCommentsById.controller");
 const { handle404endPoint } = require("./controllers/errorHandlers.controller");
 const { handlePSQL400s, handleCustomErrors, handle500Statuses } = require("./controllers/errorControllers.controllers");
 
@@ -13,6 +14,7 @@ app.get('/api/reviews/:review_id', getReviewById);
 
 app.get('/api/reviews', getReviews);
 
+app.get('/api/reviews/:review_id/comments', getCommentsByReviewId);
 
 app.use(handlePSQL400s);
 app.use(handleCustomErrors);
