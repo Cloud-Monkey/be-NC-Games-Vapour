@@ -15,8 +15,6 @@ function addNewComment(review_id, requestBody) {
         ]
     ).then((comment) => {
         return comment.rows[0];
-    }).catch((err) => {
-        next(err);
     });
 };
 

@@ -8,8 +8,6 @@ function checkIfAuthorExists(author) {
             return Promise.reject({ status: 400, msg: "Author is not valid" });
         }
         return authors.rows;
-    }).catch((err) => {
-        next(err);
     });
 };
 
