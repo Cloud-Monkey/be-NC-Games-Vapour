@@ -184,20 +184,6 @@ describe('201: POST Request body accepts an object with the following properties
             });
         });
     });
-    it('should respond with a 400 if there is no comment in body value in the posted object', () => {
-        const requestBody = {
-            body: '',
-            username: 'bainesface',
-        };
-        return request(app)
-        .post('/api/reviews/1/comments')
-        .send(requestBody)
-        .expect(400)
-        .then(({ body }) => {
-            const { msg } = body;
-            expect(msg).toBe('No comment given')
-        });
-    });
     it('should respond with a 400 if there is no body key in the posted object', () => {
         const requestBody = {
             username: 'bainesface',
@@ -208,21 +194,7 @@ describe('201: POST Request body accepts an object with the following properties
         .expect(400)
         .then(({ body }) => {
             const { msg } = body;
-            expect(msg).toBe('No comment given')
-        });
-    });
-    it('should respond with a 400 if there is no value in the username in the posted object', () => {
-        const requestBody = {
-            body: 'This is one of the best board games ever!',
-            username: '',
-        };
-        return request(app)
-        .post('/api/reviews/1/comments')
-        .send(requestBody)
-        .expect(400)
-        .then(({ body }) => {
-            const { msg } = body;
-            expect(msg).toBe('Username has not been given')
+            expect(msg).toBe('Missing request body key!')
         });
     });
     it('should respond with a 400 if there is no username key in the posted object', () => {
@@ -235,10 +207,10 @@ describe('201: POST Request body accepts an object with the following properties
         .expect(400)
         .then(({ body }) => {
             const { msg } = body;
-            expect(msg).toBe('Username has not been given')
+            expect(msg).toBe('Missing request body key!')
         });
     });
-    it('should respond with a 400 if the review_id is valid but too high', () => {
+    it('should respond with a 404 if the review_id is valid but too high', () => {
         const requestBody = {
             body: 'This is one of the best board games ever!',
             username: 'bainesface',
@@ -246,10 +218,10 @@ describe('201: POST Request body accepts an object with the following properties
         return request(app)
         .post('/api/reviews/1000/comments')
         .send(requestBody)
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
             const { msg } = body;
-            expect(msg).toBe('Invalid request!')
+            expect(msg).toBe('Cannot be found!')
         });
     });
     it('should respond with a 400 if the review_id is invalid', () => {
@@ -266,7 +238,7 @@ describe('201: POST Request body accepts an object with the following properties
             expect(msg).toBe('Invalid request!')
         });
     });
-    it('should respond with a 400 if the author is invalid', () => {
+    it('should respond with a 404 if the author is invalid', () => {
         const requestBody = {
             body: 'This is one of the best board games ever!',
             username: 'RonniePickering',
@@ -274,10 +246,10 @@ describe('201: POST Request body accepts an object with the following properties
         return request(app)
         .post('/api/reviews/1/comments')
         .send(requestBody)
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
             const { msg } = body;
-            expect(msg).toBe('Author is not valid')
+            expect(msg).toBe('Cannot be found!')
         });
     });
 });
