@@ -4,7 +4,6 @@ const request = require("supertest");
 const test_data = require("../db/data/test-data");
 // const dev_data = require("../db/data/development-data");
 const seed = require("../db/seeds/seed");
-const getReviewById = require("../controllers/getReviewsById.controller");
 
 beforeEach(() => seed(test_data));
 
@@ -68,7 +67,7 @@ describe('200: GET', () => {
         .get('/api/reviews/banana')
         .expect(400)
         .then(({ body }) => {
-            expect(body).toEqual({ msg: "Invalid ID!" });
+            expect(body).toEqual({ msg: "Invalid request!" });
             });
         });
     });
@@ -143,7 +142,7 @@ describe('200: GET', () => {
         .expect(400)
         .then(({ body }) => {
             const { msg } = body;
-            expect(msg).toBe('Invalid ID!');
+            expect(msg).toBe('Invalid request!');
         });
     });
     it('should respond with a 404 if there are no comments associated with that review_id', () => {
@@ -162,6 +161,96 @@ describe('200: GET', () => {
         .then(({ body }) => {
             const { msg } = body;
             expect(msg).toBe('ID does not exist, please use a valid ID');
+        });
+    });
+});
+describe('201: POST Request body accepts an object with the following properties, body, username', () => {
+    it('should return a 201 and an should post the comment object to the comment table in database', () => {
+        const requestBody = {
+            body: 'This is one of the best board games ever!',
+            username: 'bainesface',
+        };
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send(requestBody)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.comment).toMatchObject({
+                author: expect.any(String),
+                body: expect.any(String),
+                comment_id: expect.any(Number),
+                created_at: expect.any(String),
+                review_id: 1,
+                votes: expect.any(Number),
+            });
+        });
+    });
+    it('should respond with a 400 if there is no body key in the posted object', () => {
+        const requestBody = {
+            username: 'bainesface',
+        };
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send(requestBody)
+        .expect(400)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Missing request body key!')
+        });
+    });
+    it('should respond with a 400 if there is no username key in the posted object', () => {
+        const requestBody = {
+            body: 'This is one of the best board games ever!',
+        };
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send(requestBody)
+        .expect(400)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Missing request body key!')
+        });
+    });
+    it('should respond with a 404 if the review_id is valid but too high', () => {
+        const requestBody = {
+            body: 'This is one of the best board games ever!',
+            username: 'bainesface',
+        };
+        return request(app)
+        .post('/api/reviews/1000/comments')
+        .send(requestBody)
+        .expect(404)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Cannot be found!')
+        });
+    });
+    it('should respond with a 400 if the review_id is invalid', () => {
+        const requestBody = {
+            body: 'This is one of the best board games ever!',
+            username: 'bainesface',
+        };
+        return request(app)
+        .post('/api/reviews/mango/comments')
+        .send(requestBody)
+        .expect(400)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Invalid request!')
+        });
+    });
+    it('should respond with a 404 if the author is invalid', () => {
+        const requestBody = {
+            body: 'This is one of the best board games ever!',
+            username: 'RonniePickering',
+        };
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send(requestBody)
+        .expect(404)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Cannot be found!')
         });
     });
 });
