@@ -175,11 +175,12 @@ describe('201: POST Request body accepts an object with the following properties
         .send(requestBody)
         .expect(201)
         .then(({ body }) => {
-            expect(body).toMatchObject({
+            expect(body.comment).toMatchObject({
                 author: expect.any(String),
                 body: expect.any(String),
                 comment_id: expect.any(Number),
                 created_at: expect.any(String),
+                review_id: 1,
                 votes: expect.any(Number),
             });
         });
