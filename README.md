@@ -49,7 +49,8 @@ commentData
 - designer
 - comment_count }]
 
-**comment_count** is the total count of all the comments with this review_id - you should make use of queries to the database in order to achieve this.
+**comment_count**
+The total count of all the comments with this review_id - you should make use of queries to the database in order to achieve this.
 
 - GET /api/reviews/:review_id/comments
 - A request that can be made by the client that Responds with
@@ -62,7 +63,7 @@ commentData
 - body
 - review_id
 
-**comments** should be served with the most recent comments first
+**comments** should be served with the most recent comments first.
 
 - POST /api/reviews/:review_id/comments
 - A request that the client can make containing an object with data to be posted to the database with the following properties:
@@ -72,3 +73,16 @@ commentData
   }
   **Responds with**
   The posted comment and the status code should be 201 which signifies that something was created.
+
+- PATCH /api/reviews/:review_id
+- A request that the client can make containing an object in the form
+  {
+  inc_votes: newVote
+  }
+  **Responds with**
+  newVote will indicate how much the votes property in the database should be updated by and then will respond with the updated review.
+
+- DELETE /api/comments/:comment_id
+- A request that the client can make to delete a comment which is associated with a given review by id.
+  **Responds with**
+  Status 204 and no content
