@@ -254,7 +254,7 @@ describe('201: POST Request body accepts an object with the following properties
         });
     });
 });
-describe('200: Patch request body accepts an object in the form inc_votes: newVote ', () => {
+describe('200: PATCH request body accepts an object in the form inc_votes: newVote ', () => {
     it('should increment the votes by 1 as the client request object states', () => {
         return request(app)
     .patch('/api/reviews/3')
@@ -312,5 +312,20 @@ describe('200: Patch request body accepts an object in the form inc_votes: newVo
         const { msg } = body;
         expect(msg).toBe('ID does not exist, please use a valid ID');
         });
+    });
+});
+describe('204: DELETE remove the given comment by comment_id', () => {
+    it('should respond with a status of 204 and no content', () => {
+        return request(app)
+            .delete('/api/comments/1')
+            .expect(204);
+    });
+    it('should respond with a status of 404 and no content', () => {
+        return request(app)
+            .delete('/api/comments/1000')
+            .expect(404).then(({ body }) => {
+                const { msg } = body;
+                expect(msg).toBe('No comments found!');
+            });
     });
 });
