@@ -18,3 +18,57 @@ categoryData
 reviewData
 userData
 commentData
+
+## functions on the api
+
+- GET /api/categories
+- A request that can be made by the client that will respopnd with an array of all the category objects, each of which should have the following properties: [slug, description].
+
+- GET /api/reviews/:review_id
+- A request that can be made by the client that will respond with a review object containing properties {
+  review_id
+  title
+  review_body
+  designer
+  review_img_url
+  votes
+  category
+  owner
+  created_at
+  } where the :review_id placeholder will be replaced with a number of a review to return to the client.
+
+- GET /api/reviews
+- A request that can be made by the client that will respond a reviews array of review objects, the reviews should be sorted by date in descending order, each of which should have the following properties: [{
+- owner
+- title
+- review_id
+- category
+- review_img_url
+- created_at
+- votes
+- designer
+- comment_count }]
+
+**comment_count** is the total count of all the comments with this review_id - you should make use of queries to the database in order to achieve this.
+
+- GET /api/reviews/:review_id/comments
+- A request that can be made by the client that Responds with
+  an array of comments for the given review_id of which each comment should have the following properties:
+
+- comment_id
+- votes
+- created_at
+- author
+- body
+- review_id
+
+**comments** should be served with the most recent comments first
+
+- POST /api/reviews/:review_id/comments
+- A request that the client can make containing an object with data to be posted to the database with the following properties:
+  {
+- username
+- body
+  }
+  **Responds with**
+  The posted comment and the status code should be 201 which signifies that something was created.
