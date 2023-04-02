@@ -254,4 +254,63 @@ describe('201: POST Request body accepts an object with the following properties
         });
     });
 });
-
+describe('200: Patch request body accepts an object in the form inc_votes: newVote ', () => {
+    it('should increment the votes by 1 as the client request object states', () => {
+        return request(app)
+    .patch('/api/reviews/3')
+    .send({ inc_votes : 1 })
+    .expect(200)
+    .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+            owner: 'bainesface',
+            title: 'Ultimate Werewolf',
+            review_id: 3,
+            category: 'social deduction',
+            review_img_url: 'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700',
+            created_at: '2021-01-18T10:01:41.251Z',
+            votes: 6,
+            designer: 'Akihisa Okui',
+            });
+        });
+    });
+    it('should decrement the votes by 1 as the client request object states', () => {
+        return request(app)
+    .patch('/api/reviews/3')
+    .send({ inc_votes : -2 })
+    .expect(200)
+    .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+            owner: 'bainesface',
+            title: 'Ultimate Werewolf',
+            review_id: 3,
+            category: 'social deduction',
+            review_img_url: 'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700',
+            created_at: '2021-01-18T10:01:41.251Z',
+            votes: 3,
+            designer: 'Akihisa Okui',
+            });
+        });
+    });
+    it('should return a 400 error when given an invalid vote increment', () => {
+        return request(app)
+    .patch('/api/reviews/3')
+    .send({ inc_votes : 'Kiwi' })
+    .expect(400)
+    .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Invalid request!');
+        });
+    });
+    it('should return a 404 error when given a review that doesnt exist', () => {
+        return request(app)
+    .patch('/api/reviews/3000')
+    .send({ inc_votes : 1 })
+    .expect(404)
+    .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('ID does not exist, please use a valid ID');
+        });
+    });
+});
