@@ -314,7 +314,7 @@ describe('200: PATCH request body accepts an object in the form inc_votes: newVo
         });
     });
 });
-describe('204: DELETE delete the given comment by comment_id', () => {
+describe('204: DELETE remove the given comment by comment_id', () => {
     it('should respond with a status of 204 and no content', () => {
         return request(app)
             .delete('/api/comments/1')
