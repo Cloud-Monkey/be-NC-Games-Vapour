@@ -10,7 +10,7 @@ beforeEach(() => seed(test_data));
 afterAll(() => db.end());
 
 describe('200: GET', () => {
-    it('should respond with a json containing an array of categories that have the properties of slug and description', () => {
+    it('should respond with a json containing an array of categories that have the defined properties', () => {
         return request(app)
         .get('/api/categories')
         .expect(200)
@@ -327,5 +327,24 @@ describe('204: DELETE remove the given comment by comment_id', () => {
                 const { msg } = body;
                 expect(msg).toBe('No comments found!');
             });
+    });
+});
+describe('200: GET ', () => {
+    it('should respond with a 200 status and an array of user objects, each object should have the defined properties', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({ body }) => {
+            const { users } = body;
+            expect(users).toBeInstanceOf(Array);
+            expect(users.length).toBe(4);
+            users.forEach((user) => {
+                expect(user).toMatchObject({
+                  username: expect.any(String),
+                  name: expect.any(String),
+                  avatar_url: expect.any(String),
+                });
+            });
+        });
     });
 });
