@@ -50,14 +50,39 @@ describe('200: GET', () => {
             review.forEach((review) => {
                 expect(review).toMatchObject({
                 review_id: 1,
-                title: expect.any(String),
-                review_body: expect.any(String),
-                designer: expect.any(String),
-                review_img_url: expect.any(String),
-                votes: expect.any(Number),
-                category: expect.any(String),
-                owner: expect.any(String),
-                created_at: expect.any(String),
+                title: 'Agricola',
+                review_body: 'Farmyard fun!',
+                designer: 'Uwe Rosenberg',
+                review_img_url: 'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+                votes: 1,
+                category: 'euro game',
+                owner: 'mallionaire',
+                created_at: '2021-01-18T10:00:20.514Z',
+                comment_count: 0,
+                });
+            });
+        });
+    });
+    it('should respond with a json containing a review array that has the defined properties with comment count for review_id of 2', () => {
+        return request(app)
+        .get('/api/reviews/2')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            expect(review).toBeInstanceOf(Array);
+            expect(review.length).toBe(1);
+            review.forEach((review) => {
+                expect(review).toMatchObject({
+                review_id: 2,
+                title: 'Jenga',
+                review_body: 'Fiddly fun for all the family',
+                designer: 'Leslie Scott',
+                review_img_url: 'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                votes: 5,
+                category: 'dexterity',
+                owner: 'philippaclaire9',
+                created_at: '2021-01-18T10:01:41.251Z',
+                comment_count: 3,
                 });
             });
         });
@@ -76,7 +101,7 @@ describe('200: GET', () => {
         .get('/api/reviews/999999')
         .expect(404)
         .then(({ body }) => {
-            expect(body.msg).toEqual("ID does not exist, please use a valid ID");
+            expect(body.msg).toEqual("Error: not found");
             });
     });
 describe('200: GET', () => {
@@ -151,7 +176,7 @@ describe('200: GET', () => {
         .expect(404)
         .then(({ body }) => {
             const { msg } = body;
-            expect(msg).toBe('There are currently no comments for this review.');
+            expect(msg).toBe('Error: not found');
         });
     });
     it('should respond with a 404 if there is no review associated with that review_id', () => {
@@ -160,7 +185,7 @@ describe('200: GET', () => {
         .expect(404)
         .then(({ body }) => {
             const { msg } = body;
-            expect(msg).toBe('ID does not exist, please use a valid ID');
+            expect(msg).toBe('Error: not found');
         });
     });
 });
@@ -310,7 +335,7 @@ describe('200: PATCH request body accepts an object in the form inc_votes: newVo
     .expect(404)
     .then(({ body }) => {
         const { msg } = body;
-        expect(msg).toBe('ID does not exist, please use a valid ID');
+        expect(msg).toBe('Error: not found');
         });
     });
 });
