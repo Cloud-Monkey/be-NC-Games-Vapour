@@ -1,6 +1,6 @@
 const db = require('../db/connection');
 
-function fetchReviews(sortBy, orderBy) {
+function fetchReviewsByCategory(category, sortBy, orderBy) {
     const greenTopics = [
         "review_id",
         "title",
@@ -27,7 +27,7 @@ function fetchReviews(sortBy, orderBy) {
 
     // set default orderBy to 'DESC'
     const defaultOrder = orderBy ? orderBy : 'DESC';
-        
+
     let basePsql = `
         SELECT reviews.review_id,
             reviews.title,
@@ -40,12 +40,18 @@ function fetchReviews(sortBy, orderBy) {
             CAST(COUNT(comments.review_id) AS INT) AS comment_count
         FROM reviews
         LEFT JOIN comments on reviews.review_id = comments.review_id
+        WHERE reviews.category = $1
         GROUP BY reviews.review_id
         ORDER BY ${defaultSort} ${defaultOrder};
     `;
 
+    const structureArr = [
+        category,
+    ];
+
     return db.query(
         basePsql,
+        structureArr,
     ).then((review) => {
         if (review.rows.length === 0) {
             return Promise.reject({ status: 404, msg: "Error: not found" });
@@ -55,4 +61,4 @@ function fetchReviews(sortBy, orderBy) {
     });
 }
 
-module.exports = fetchReviews;
+module.exports = fetchReviewsByCategory;

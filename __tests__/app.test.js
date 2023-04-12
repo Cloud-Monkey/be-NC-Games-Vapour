@@ -348,3 +348,117 @@ describe('200: GET ', () => {
         });
     });
 });
+describe('200 GET should respond with reviews by queries', () => {
+    it('should respond with a 200 status and reviews by dexterity catergory', () => {
+        return request(app)
+        .get('/api/reviews?category=dexterity')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            expect(review).toBeInstanceOf(Array);
+            expect(review.length).toBe(1);
+            expect(review[0]).toMatchObject({
+                review_id: 2,
+                title: 'Jenga',
+                category: 'dexterity',
+                designer: 'Leslie Scott',
+                owner: 'philippaclaire9',
+                review_img_url: 'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                created_at: '2021-01-18T10:01:41.251Z',
+                votes: 5,
+                comment_count: 3,
+            });
+        });
+    });
+    it('should respond with a 200 status and "social deduction" category', () => {
+        return request(app)
+        .get('/api/reviews?category=social deduction')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            expect(review).toBeInstanceOf(Array);
+            expect(review.length).toBe(11);
+            review.forEach((rev) => {
+                expect(rev.category).toBe('social deduction');
+            });
+        });
+    });
+    it('should respond with a 404 status and not found error', () => {
+        return request(app)
+        .get('/api/reviews?category=peach')
+        .expect(404)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Error: not found');
+        });
+    });
+    it('should respond with a 200 status and ignore query given if query is invalid', () => {
+        return request(app)
+        .get('/api/reviews?peach=ronnie pickering')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            const reviewIdsOnly = review.map((rev) => rev.review_id);
+            expect(reviewIdsOnly).toEqual([7, 4, 12, 10, 3, 2, 9, 11, 8, 1, 5, 6, 13]);
+        });
+    });
+    it('should sort by review_id', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=review_id')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            const reviewIdsOnly = review.map((rev) => rev.review_id);
+            expect(reviewIdsOnly).toEqual([13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
+        });
+    });
+    it('should respond with a 400 status and bad request error', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=banana')
+        .expect(400)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Invalid request!');
+        });
+    });
+    it('should order by ASC', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=review_id&order=ASC')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            const reviewIdsOnly = review.map((rev) => rev.review_id);
+            expect(reviewIdsOnly).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+        });
+    });
+    it('should order by DESC', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=review_id&order=DESC')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            const reviewIdsOnly = review.map((rev) => rev.review_id);
+            expect(reviewIdsOnly).toEqual([13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
+        });
+    });
+    it('should respond with a 400 status and bad request error on an invalid order', () => {
+        return request(app)
+        .get('/api/reviews?order=pineapple')
+        .expect(400)
+        .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe('Invalid request!');
+        });
+    });
+    it('should filter by category of social deduction, sort by review_id and order by ASC', () => {
+        return request(app)
+        .get('/api/reviews?category=social deduction&sort_by=review_id&order=ASC')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            const reviewIdsOnly = review.map((rev) => rev.review_id);
+            expect(reviewIdsOnly).toEqual([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+        });
+    });
+});
+
