@@ -1,5 +1,5 @@
 exports.handlePSQL400s = (err, req, resp, next) => {
-    if (err.code === '22P02') {
+    if (err.code === '22P02' || err.code === '42703') {
         resp.status(400).send({ msg: 'Invalid request!' });
     }
     if (err.code === '23503') {
