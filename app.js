@@ -7,6 +7,7 @@ const postNewComment = require("./controllers/postNewComment.controllers.js");
 const patchVotesOnReview = require("./controllers/patchVotesOnReview.controller.js");
 const deleteComment = require("./controllers/deleteComment.controller.js");
 const { getUsers } = require("./controllers/getUsers.controller.js");
+const getEndpoints = require("./controllers/getEndpoints.controller.js");
 
 const { handle404endPoint } = require("./controllers/errorHandlers.controller");
 const { handlePSQL400s, handleCustomErrors, handle500Statuses } = require("./controllers/errorControllers.controllers");
@@ -14,6 +15,8 @@ const { handlePSQL400s, handleCustomErrors, handle500Statuses } = require("./con
 const app = express();
 
 app.use(express.json());
+
+app.get('/api', getEndpoints);
 
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getReviewById);
