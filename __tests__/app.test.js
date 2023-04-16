@@ -2,8 +2,8 @@ const db = require("../db/connection");
 const app = require("../app");
 const request = require("supertest");
 const test_data = require("../db/data/test-data");
-// const dev_data = require("../db/data/development-data");
 const seed = require("../db/seeds/seed");
+const enpointJson = require("../endpoints.json")
 
 beforeEach(() => seed(test_data));
 
@@ -485,5 +485,16 @@ describe('200 GET should respond with reviews by queries', () => {
             expect(reviewIdsOnly).toEqual([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
         });
     });
+    describe('GET/api should respond with a JSON describing all the available endpoints on your API', () => {
+        it('should respond with a JSON with the following properties', () => {
+            return request(app)
+            .get('/api')
+            .expect(200)
+            .then(({ body }) => {
+                const endpoints = Object.keys(body);
+                expect(endpoints.length).toBe(9);
+                expect(body).toMatchObject(enpointJson);
+            });
+        });
+    });
 });
-
