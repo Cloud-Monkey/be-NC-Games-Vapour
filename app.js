@@ -8,11 +8,14 @@ const patchVotesOnReview = require("./controllers/patchVotesOnReview.controller.
 const deleteComment = require("./controllers/deleteComment.controller.js");
 const { getUsers } = require("./controllers/getUsers.controller.js");
 const getEndpoints = require("./controllers/getEndpoints.controller.js");
+const cors = require('cors');
 
 const { handle404endPoint } = require("./controllers/errorHandlers.controller");
 const { handlePSQL400s, handleCustomErrors, handle500Statuses } = require("./controllers/errorControllers.controllers");
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
